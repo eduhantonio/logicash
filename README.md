@@ -28,3 +28,39 @@ source env/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+<br>
+
+---
+
+<br>
+
+# English Version - Logicash Financial Literacy
+
+**LogiCash** is web-based software designed to teach **financial literacy** to elementary and high school students and others interested in the subject.  
+The project aims to combine **logical-mathematical reasoning**, **active methodologies**, and **gamification** to transform learning into a dynamic, accessible, and engaging experience.  
+
+## 🚀 Objectives
+- Develop an interactive platform for learning financial education.
+- Stimulate logical reasoning through mathematical challenges and games.
+- Use active methodologies to promote student autonomy.
+- Democratize access to financial knowledge, preparing more conscious citizens.  
+
+## 📦 How to run the project locally
+
+**1. Clone this repository and access the directory**
+```bash
+git clone https://github.com/eduhantonio/logicash.git
+cd logicash
+```
+**2. Create and access a Virtual Environment (venv)**
+```bash
+python -m venv env
+# On Windows:
+.\env\Scripts\activate
+# On macOS/Linux:
+source env/bin/activate
+``` 
+**3. Install the necessary dependencies**
+```bash
+pip install -r requirements.txt
+```
