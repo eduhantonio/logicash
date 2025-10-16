@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiCash | Dashboard do Estudante</title>
+    
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'img/logo-logicash-green.png' %}" type="image/x-icon">
+    <meta name="description" content="LogiCash - Dashboard de Educação Financeira Gamificada">
+    <meta name="keywords" content="educação financeira, gamificação, dashboard, estudantes">
+</head>
+<body>
+    <!-- Mensagens do Django -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Botão Menu Mobile -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Menu Lateral -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"> <img src="{% static 'img/logo-logicash-white-removebg.png' %}" alt="LogiCash" width="120" height="auto"> LogiCash</div>
+                <div class="logo-subtitle">Educação Financeira Gamificada</div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <div class="nav-item">
+                    <a href="{% url 'dashboard' %}" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        Início
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-gamepad"></i>
+                        Desafios
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-trophy"></i>
+                        Ranking
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Estatísticas
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-user-cog"></i>
+                        Perfil
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="{% url 'logout' %}" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Header de Boas-vindas -->
+            <div class="content-header fade-in-up">
+                <h1 class="welcome-title">
+                    Bem-vindo ao LogiCash, {{ estudante.nome|default:user.username }}! 🎉
+                </h1>
+                <p class="welcome-subtitle">
+                    Continue sua jornada de aprendizado em educação financeira
+                </p>
+            </div>
+
+            <!-- Grid de Estatísticas -->
+            <div class="stats-grid">
+                <!-- Card de Pontuação Total -->
+                <div class="stat-card fade-in-up">
+                    <div class="stat-card-header">
+                        <h3 class="stat-card-title">Pontuação Total</h3>
+                        <div class="stat-card-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-value">{{ pontuacao.pontos_totais|default:0 }}</div>
+                    <div class="stat-card-description">Pontos Acumulados</div>
+                    
+                    <!-- Barra de progresso para o próximo nível -->
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                </div>
+
+                <!-- Card de Nível Atual -->
+                <div class="stat-card fade-in-up">
+                    <div class="stat-card-header">
+                        <h3 class="stat-card-title">Nível Atual</h3>
+                        <div class="stat-card-icon">
+                            <i class="fas fa-level-up-alt"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-value">{{ pontuacao.nivel_atual|default:1 }}</div>
+                    <div class="stat-card-description">
+                        {% if pontuacao.nivel_atual == 1 %}
+                            Iniciante
+                        {% elif pontuacao.nivel_atual <= 5 %}
+                            Estudante
+                        {% elif pontuacao.nivel_atual <= 10 %}
+                            Intermediário
+                        {% elif pontuacao.nivel_atual <= 20 %}
+                            Avançado
+                        {% else %}
+                            Expert
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Card de Quizzes Completados -->
+                <div class="stat-card fade-in-up">
+                    <div class="stat-card-header">
+                        <h3 class="stat-card-title">Quizzes Completados</h3>
+                        <div class="stat-card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-value">{{ total_quizzes }}</div>
+                    <div class="stat-card-description">Desafios Finalizados</div>
+                </div>
+
+                <!-- Card de Taxa de Acertos -->
+                <div class="stat-card fade-in-up">
+                    <div class="stat-card-header">
+                        <h3 class="stat-card-title">Taxa de Acertos</h3>
+                        <div class="stat-card-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-value">{{ percentual_acertos }}%</div>
+                    <div class="stat-card-description">{{ total_acertos }} / {{ total_perguntas }} Perguntas</div>
+                </div>
+            </div>
+
+            <!-- Seção de Conquistas -->
+            <div class="achievements-section fade-in-up">
+                <h2 class="section-title">
+                    <i class="fas fa-trophy"></i>
+                    Conquistas Desbloqueadas
+                </h2>
+                
+                {% if conquistas_desbloqueadas %}
+                    <div class="achievements-grid">
+                        {% for estudante_conquista in conquistas_desbloqueadas %}
+                            <div class="achievement-card" data-tooltip="{{ estudante_conquista.conquista.descricao }}">
+                                <div class="achievement-icon" style="background: {{ estudante_conquista.conquista.cor }}">
+                                    <i class="fas fa-{{ estudante_conquista.conquista.icone }}"></i>
+                                </div>
+                                <h4 class="achievement-name">{{ estudante_conquista.conquista.nome }}</h4>
+                                <p class="achievement-date">
+                                    Desbloqueada em {{ estudante_conquista.data_desbloqueio|date:"d/m/Y" }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-medal"></i>
+                        <h3>Nenhuma conquista ainda</h3>
+                        <p>Complete quizzes para desbloquear suas primeiras conquistas!</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Seção de Próximas Metas -->
+            {% if conquistas_disponiveis %}
+            <div class="achievements-section fade-in-up">
+                <h2 class="section-title">
+                    <i class="fas fa-target"></i>
+                    Próximas Conquistas
+                </h2>
+                
+                <div class="achievements-grid">
+                    {% for conquista in conquistas_disponiveis %}
+                        <div class="achievement-card" data-tooltip="{{ conquista.descricao }}" style="opacity: 0.7; filter: grayscale(50%);">
+                            <div class="achievement-icon" style="background: #495057;">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <h4 class="achievement-name">{{ conquista.nome }}</h4>
+                            <p class="achievement-date">
+                                {% if conquista.criterio_pontos %}
+                                    {{ conquista.criterio_pontos }} pontos necessários
+                                {% elif conquista.criterio_quizzes %}
+                                    {{ conquista.criterio_quizzes }} quizzes necessários
+                                {% else %}
+                                    Critério especial
+                                {% endif %}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Seção de Progresso Recente -->
+            {% if resultados_recentes %}
+            <div class="achievements-section fade-in-up">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i>
+                    Progresso Recente
+                </h2>
+                
+                <div class="row">
+                    {% for resultado in resultados_recentes %}
+                        <div class="col-md-4 mb-3">
+                            <div class="stat-card" style="padding: 1rem;">
+                                <div class="stat-card-header">
+                                    <h5 class="stat-card-title">{{ resultado.quiz.titulo }}</h5>
+                                    <div class="stat-card-icon" style="width: 30px; height: 30px; font-size: 1rem;">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                                <div class="stat-card-value" style="font-size: 1.5rem;">{{ resultado.acertos }}/{{ resultado.total_perguntas }}</div>
+                                <div class="stat-card-description">
+                                    {{ resultado.pontuacao_obtida }} pontos • {{ resultado.data_realizacao|date:"d/m/Y" }}
+                                </div>
+                                
+                                <!-- Barra de progresso do quiz -->
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {% widthratio resultado.acertos resultado.total_perguntas 100 %}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Script adicional para funcionalidades específicas -->
+    <script>
+        // Atualiza o botão do menu mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (mobileMenuBtn && sidebar) {
+                // Adiciona o ícone hambúrguer se não existir
+                if (!mobileMenuBtn.querySelector('i')) {
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            }
+        });
+        
+        // Adiciona tooltip ao título de boas-vindas
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeTitle = document.querySelector('.welcome-title');
+            if (welcomeTitle) {
+                welcomeTitle.setAttribute('data-tooltip', 'Continue estudando para subir de nível!');
+            }
+        });
+        
+        // Adiciona efeito de hover aos cards de estatísticas
+        document.addEventListener('DOMContentLoaded', function() {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

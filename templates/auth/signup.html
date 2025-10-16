@@ -1,0 +1,294 @@
+{% extends 'auth/base_auth.html' %}
+
+{% block title %}Cadastro - LogiCash{% endblock %}
+
+{% block card_header %}
+    <h2><i class="fas fa-user-plus"></i> Criar Conta</h2>
+    <p>Junte-se ao LogiCash e comece sua jornada na educação financeira</p>
+{% endblock %}
+
+{% block card_body %}
+    <form method="post" class="auth-form" id="signupForm">
+        {% csrf_token %}
+        
+        <!-- Nome e Sobrenome -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                        <i class="fas fa-user"></i> {{ form.first_name.label }}
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="form-errors">
+                            {% for error in form.first_name.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                        <i class="fas fa-user"></i> {{ form.last_name.label }}
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="form-errors">
+                            {% for error in form.last_name.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Username e Email -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                        <i class="fas fa-at"></i> {{ form.username.label }}
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="form-errors">
+                            {% for error in form.username.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                        <i class="fas fa-envelope"></i> {{ form.email.label }}
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="form-errors">
+                            {% for error in form.email.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Senhas -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}" class="form-label">
+                        <i class="fas fa-lock"></i> Nova Senha
+                    </label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                        <div class="form-errors">
+                            {% for error in form.password1.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if form.password1.help_text %}
+                        <small class="form-text">{{ form.password1.help_text }}</small>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}" class="form-label">
+                        <i class="fas fa-lock"></i> Confirmar Senha
+                    </label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <div class="form-errors">
+                            {% for error in form.password2.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações Acadêmicas -->
+        <div class="form-section">
+            <h6><i class="fas fa-graduation-cap"></i> Informações Acadêmicas (Opcional)</h6>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="{{ form.escola.id_for_label }}" class="form-label">
+                            <i class="fas fa-school"></i> {{ form.escola.label }}
+                        </label>
+                        {{ form.escola }}
+                        {% if form.escola.errors %}
+                            <div class="form-errors">
+                                {% for error in form.escola.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="{{ form.serie.id_for_label }}" class="form-label">
+                            <i class="fas fa-calendar-alt"></i> {{ form.serie.label }}
+                        </label>
+                        {{ form.serie }}
+                        {% if form.serie.errors %}
+                            <div class="form-errors">
+                                {% for error in form.serie.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.data_nascimento.id_for_label }}" class="form-label">
+                    <i class="fas fa-birthday-cake"></i> {{ form.data_nascimento.label }}
+                </label>
+                {{ form.data_nascimento }}
+                {% if form.data_nascimento.errors %}
+                    <div class="form-errors">
+                        {% for error in form.data_nascimento.errors %}
+                            <small class="text-danger">{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Termos de Uso -->
+        <div class="form-group">
+            <div class="form-check">
+                {{ form.aceito_termos }}
+                <label class="form-check-label" for="{{ form.aceito_termos.id_for_label }}">
+                    {{ form.aceito_termos.label }}
+                </label>
+                {% if form.aceito_termos.errors %}
+                    <div class="form-errors">
+                        {% for error in form.aceito_termos.errors %}
+                            <small class="text-danger">{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Botão de Submit -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary auth-btn">
+                <i class="fas fa-user-plus"></i>
+                Criar Conta
+            </button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block auth_links %}
+    <div class="auth-switch">
+        <p>Já tem uma conta?</p>
+        <a href="{% url 'login' %}" class="btn btn-outline-primary">
+            <i class="fas fa-sign-in-alt"></i>
+            Fazer Login
+        </a>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animação de entrada dos campos
+    const formGroups = document.querySelectorAll('.form-group');
+    formGroups.forEach((group, index) => {
+        group.style.opacity = '0';
+        group.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            group.style.transition = 'all 0.6s ease-out';
+            group.style.opacity = '1';
+            group.style.transform = 'translateY(0)';
+        }, index * 50);
+    });
+
+    // Validação em tempo real da senha
+    const password1 = document.getElementById('{{ form.password1.id_for_label }}');
+    const password2 = document.getElementById('{{ form.password2.id_for_label }}');
+    
+    function validatePasswords() {
+        if (password1.value && password2.value) {
+            if (password1.value !== password2.value) {
+                password2.setCustomValidity('As senhas não coincidem');
+            } else {
+                password2.setCustomValidity('');
+            }
+        }
+    }
+    
+    password1.addEventListener('input', validatePasswords);
+    password2.addEventListener('input', validatePasswords);
+
+    // Indicador de força da senha
+    password1.addEventListener('input', function() {
+        const strength = calculatePasswordStrength(this.value);
+        updatePasswordStrengthIndicator(strength);
+    });
+
+    function calculatePasswordStrength(password) {
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        return strength;
+    }
+
+    function updatePasswordStrengthIndicator(strength) {
+        let indicator = document.getElementById('password-strength');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'password-strength';
+            indicator.className = 'password-strength-indicator';
+            password1.parentNode.appendChild(indicator);
+        }
+
+        const levels = ['Muito Fraca', 'Fraca', 'Regular', 'Boa', 'Muito Forte'];
+        const colors = ['#dc3545', '#fd7e14', '#ffc107', '#20c997', '#198754'];
+        
+        indicator.innerHTML = `
+            <div class="strength-bar">
+                <div class="strength-fill" style="width: ${strength * 20}%; background-color: ${colors[strength - 1] || '#adb5bd'}"></div>
+            </div>
+            <small class="strength-text" style="color: ${colors[strength - 1] || '#adb5bd'}">
+                ${levels[strength - 1] || 'Muito Fraca'}
+            </small>
+        `;
+    }
+
+    // Efeito de foco nos inputs
+    const inputs = document.querySelectorAll('.auth-input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.classList.remove('focused');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
