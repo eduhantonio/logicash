@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LogiCash | Educação Financeira{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'img/logo-logicash-green.png' %}" type="image/x-icon">
+    <meta name="description" content="LogiCash - Dashboard de Educação Financeira Gamificada">
+    <meta name="keywords" content="educação financeira, gamificação, dashboard, estudantes">
+</head>
+<body>
+    <!-- Mensagens do Django -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Botão Menu Mobile -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Menu Lateral -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"> 
+                    <img src="{% static 'img/logo-logicash-white-removebg.png' %}" alt="LogiCash" width="120" height="auto"> LogiCash
+                </div>
+                <div class="logo-subtitle">Educação Financeira Gamificada</div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <div class="nav-item">
+                    <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="fas fa-home"></i>
+                        Início
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="{% url 'desafios' %}" class="nav-link {% if request.resolver_match.url_name == 'desafios' %}active{% endif %}">
+                        <i class="fas fa-gamepad"></i>
+                        Desafios
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="{% url 'ranking' %}" class="nav-link {% if request.resolver_match.url_name == 'ranking' %}active{% endif %}">
+                        <i class="fas fa-trophy"></i>
+                        Ranking
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="{% url 'estatisticas' %}" class="nav-link {% if request.resolver_match.url_name == 'estatisticas' %}active{% endif %}">
+                        <i class="fas fa-chart-line"></i>
+                        Estatísticas
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="{% url 'profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                        <i class="fas fa-user-cog"></i>
+                        Perfil
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="{% url 'logout' %}" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+         <!-- 🔽 Área de conteúdo dinâmico das páginas -->
+        <main class="main-content p-4">
+            {% block content %}
+            <!-- Conteúdo das páginas será injetado aqui -->
+            {% endblock %}
+        </main>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Script adicional para funcionalidades específicas -->
+    <script>
+        // Atualiza o botão do menu mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (mobileMenuBtn && sidebar) {
+                // Adiciona o ícone hambúrguer se não existir
+                if (!mobileMenuBtn.querySelector('i')) {
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            }
+        });
+        
+        // Adiciona tooltip ao título de boas-vindas
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeTitle = document.querySelector('.welcome-title');
+            if (welcomeTitle) {
+                welcomeTitle.setAttribute('data-tooltip', 'Continue estudando para subir de nível!');
+            }
+        });
+        
+        // Adiciona efeito de hover aos cards de estatísticas
+        document.addEventListener('DOMContentLoaded', function() {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

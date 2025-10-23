@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% block title %}LogiCash | Desafios{% endblock %}
+
+<div class="container mt-5">
+  <h2 class="text-center text-success">Desafios Disponíveis</h2>
+
+  <div class="row justify-content-center mt-4">
+    {% for modulo in modulos %}
+      <div class="col-md-4 mb-4">
+        <div class="card text-center shadow-sm border-0" style="background-color: #111827; color: #fcfffe;">
+          <div class="card-body">
+            <h4 class="card-title">{{ modulo.nome }}</h4>
+            <p class="card-text">{{ modulo.descricao }}</p>
+            <a href="#" class="btn btn-success">Acessar</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center text-muted">Nenhum módulo encontrado.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

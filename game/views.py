@@ -10,7 +10,7 @@ from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from django.urls import reverse
-from .models import Estudante, Pontuacao, Conquista, EstudanteConquista, Resultado
+from .models import Estudante, Pontuacao, Conquista, EstudanteConquista, Resultado, Modulo, Desafio, ProgressoDesafio
 from .forms import LoginForm, SignupForm, PasswordResetFormCustom, SetPasswordForm, ProfileUpdateForm
 
 
@@ -22,6 +22,13 @@ def index(request):
         return redirect('dashboard')
     return redirect('login')
 
+def base(request):
+    """
+    View base - renderiza o template base
+    """
+    return render(request, 'base.html')
+
+#=================== VIEWS PRINCIPAIS ====================#
 
 @login_required
 def dashboard_view(request):
@@ -106,6 +113,63 @@ def logout_view(request):
     messages.success(request, "Logout realizado com sucesso!")
     return redirect('login')
 
+@login_required
+def ranking_view(request):
+    """
+    View para exibir o ranking dos estudantes
+    """
+    rankings = Pontuacao.objects.select_related('estudante__user').order_by('-pontos_totais')[:50]
+    return render(request, 'ranking.html', {'rankings': rankings})
+
+@login_required
+def estatisticas_view(request):
+    """
+    View para exibir estatísticas gerais dos estudantes
+    """
+    total_estudantes = Estudante.objects.count()
+    total_pontos = Pontuacao.objects.aggregate(total=Sum('pontos_totais'))['total'] or 0
+    media_pontos = Pontuacao.objects.aggregate(media=Sum('pontos_totais') / Count('id'))['media'] or 0
+    
+    context = {
+        'total_estudantes': total_estudantes,
+        'total_pontos': total_pontos,
+        'media_pontos': round(media_pontos, 2),
+    }
+    
+    return render(request, 'estatisticas.html', context)
+
+@login_required
+def profile_view(request):
+    """
+    View para visualizar e editar perfil do usuário
+    """
+    try:
+        estudante = request.user.estudante
+    except Estudante.DoesNotExist:
+        # Criar perfil se não existir
+        estudante = Estudante.objects.create(
+            user=request.user,
+            nome=request.user.get_full_name() or request.user.username
+        )
+    
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=estudante)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Perfil atualizado com sucesso!")
+            return redirect('profile')
+        else:
+            messages.error(request, "Por favor, corrija os erros abaixo.")
+    else:
+        form = ProfileUpdateForm(instance=estudante)
+    
+    context = {
+        'estudante': estudante,
+        'form': form,
+        'pontuacao': getattr(estudante, 'pontuacao', None)
+    }
+    
+    return render(request, 'auth/profile.html', context)
 
 # ==================== VIEWS DE AUTENTICAÇÃO ====================
 
@@ -294,36 +358,14 @@ def password_reset_confirm_view(request, user_id, token):
         messages.error(request, "Usuário não encontrado.")
         return redirect('password_reset')
 
+#=================== VIEWS DE DESAFIOS ====================#
 
 @login_required
-def profile_view(request):
-    """
-    View para visualizar e editar perfil do usuário
-    """
-    try:
-        estudante = request.user.estudante
-    except Estudante.DoesNotExist:
-        # Criar perfil se não existir
-        estudante = Estudante.objects.create(
-            user=request.user,
-            nome=request.user.get_full_name() or request.user.username
-        )
+def desafios_view(request):
+    modulos = Modulo.objects.all()
+    return render(request, 'desafios.html', {'modulos': modulos})
+
     
-    if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, instance=estudante)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Perfil atualizado com sucesso!")
-            return redirect('profile')
-        else:
-            messages.error(request, "Por favor, corrija os erros abaixo.")
-    else:
-        form = ProfileUpdateForm(instance=estudante)
-    
-    context = {
-        'estudante': estudante,
-        'form': form,
-        'pontuacao': getattr(estudante, 'pontuacao', None)
-    }
-    
-    return render(request, 'auth/profile.html', context)
+def lista_desafios(request):
+    modulos = Modulo.objects.all()
+    return render(request, 'desafios.html', {'modulos': modulos})

@@ -1,9 +1,7 @@
-/* 
- * LogiCash - Estilos do Dashboard
- * Cores principais: Verde #008445, Verde secundário #2aea8e, Branco #fcfffe, Cinza #323232
- */
+/* =========================================
+        1. VARIÁVEIS GLOBAIS E RESET
+========================================= */
 
-/* Reset e configurações globais */
 * {
     margin: 0;
     padding: 0;
@@ -13,36 +11,70 @@
 :root {
     --primary-green: #008445;
     --secondary-green: #3cea87;
-    --light-green: #1c1e33;
-    --white: #1c1e33;
-    --dark-gray: #e9ecef;
-    --light-gray: #27273e;
+    --white: #fff;
+
     --primary-bluegray: #1c1e33;
     --secondary-bluegray: #27273e;
+    --light-bluegray: #e9ecef;
+
+    --text-primary: #e9ecef;
+    --text-secondary: #adb5bd;
+
+    --card-bg: #27273e;
+    --sidebar-bg: #1c1e33;
+
     --border-radius: 12px;
     --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     --transition: all 0.3s ease;
-    --text-primary: #e9ecef;
-    --text-secondary: #adb5bd;
-    --card-bg: #27273e;
-    --sidebar-bg: #1c1e33;
 }
+
+/* =========================================
+            2. LAYOUT PRINCIPAL
+========================================= */
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1c1e33 0%, #27273e 100%);
+    background: var(--light-bluegray);
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
 }
 
-/* Layout principal */
+h1 {
+    color: var(--primary-green);
+}
+
+p {
+    color: var(--text-primary);
+}
+
+small {
+    color: var(--text-secondary);
+}
+
 .dashboard-container {
     display: flex;
     min-height: 100vh;
 }
 
-/* Menu lateral */
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+    transition: var(--transition);
+}
+
+.main-content-profile {
+    flex: 1;
+    margin-left: 20px;
+    padding: 2rem;
+    transition: var(--transition);
+}
+
+/* =========================================
+            3. BARRA LATERAL
+========================================= */
+
 .sidebar {
     width: 280px;
     background: var(--sidebar-bg);
@@ -115,13 +147,9 @@ body {
     text-align: center;
 }
 
-/* Conteúdo principal */
-.main-content {
-    flex: 1;
-    margin-left: 280px;
-    padding: 2rem;
-    transition: var(--transition);
-}
+/* =========================================
+    4. COMPONENTES COMUNS (Cards, Grids)
+========================================= */
 
 /* Header do conteúdo */
 .content-header {
@@ -147,7 +175,6 @@ body {
     opacity: 0.8;
 }
 
-/* Grid de cards */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -155,7 +182,10 @@ body {
     margin-bottom: 2rem;
 }
 
-/* Cards de estatísticas */
+.card-body h4{
+    color: var(--secondary-green);
+}
+
 .stat-card {
     background: var(--card-bg);
     padding: 2rem;
@@ -178,7 +208,7 @@ body {
 }
 
 .text-muted {
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .stat-card:hover {
@@ -245,6 +275,10 @@ body {
     margin-right: 0.75rem;
     color: var(--secondary-green);
 }
+
+/* =========================================
+        5. COMPONENTES DE CONQUISTAS
+========================================= */
 
 .achievements-grid {
     display: grid;
@@ -314,7 +348,10 @@ body {
     opacity: 0.7;
 }
 
-/* Barra de progresso */
+/* =========================================
+            6. BARRA DE PROGRESSO
+========================================= */
+
 .progress-bar {
     width: 100%;
     height: 8px;
@@ -343,7 +380,10 @@ body {
     animation: progress-shine 2s infinite;
 }
 
-/* Animações */
+/* =========================================
+         7. ANIMAÇÕES E EFEITOS
+========================================= */
+
 @keyframes shimmer {
     0% { transform: translateX(-100%) rotate(45deg); }
     100% { transform: translateX(100%) rotate(45deg); }
@@ -369,7 +409,10 @@ body {
     animation: fadeInUp 0.6s ease-out;
 }
 
-/* Botão de logout */
+/* =========================================
+            8. BOTÃO DE LOGOUT
+========================================= */
+
 .logout-btn {
     display: flex;
     align-items: center;
@@ -394,7 +437,10 @@ body {
     text-align: center;
 }
 
-/* Responsividade */
+/* =========================================
+    9. RESPONSIVIDADE (MEDIA QUERIES)
+========================================= */
+
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
@@ -443,7 +489,6 @@ body {
     }
 }
 
-/* Botão hambúrguer para mobile */
 .mobile-menu-btn {
     display: none;
     position: fixed;
@@ -465,7 +510,10 @@ body {
     }
 }
 
-/* Estados vazios */
+/* =========================================
+     10. ESTADOS VAZIOS E MENSAGENS
+========================================= */
+
 .empty-state {
     text-align: center;
     padding: 3rem 2rem;
@@ -489,7 +537,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Mensagens do Django */
 .messages {
     position: fixed;
     top: 1rem;
@@ -527,4 +574,107 @@ body {
         transform: translateX(0);
         opacity: 1;
     }
+}
+
+/* =========================================
+        11. MODIFICAÇÕES ESPECÍFICAS
+========================================= */    
+
+/* Cards do perfil */
+.main-content .profile-card {
+    background: var(--card-bg);
+    border: 1px solid var(--secondary-bluegray);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+/* Ajuste de título do card (mantém o verde vibrante) */
+.main-content .profile-card .profile-card-header {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* Corpo dos cards */
+.main-content .profile-card .profile-card-body {
+    padding: 1.6rem;
+    color: var(--text-primary);
+}
+
+/* Labels e inputs do formulário */
+.main-content .profile-form-label {
+    color: var(--secondary-green);
+    font-weight: 600;
+}
+
+.main-content .profile-form input,
+.main-content .profile-form select,
+.main-content .profile-form textarea {
+    background: var(--secondary-bluegray);
+    color: var(--text-primary);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+}
+
+/* Botões */
+.main-content .profile-btn-save.btn-success {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    border: none;
+    color: #fff;
+}
+
+.main-content .profile-btn-save.btn-success:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(46,234,142,0.18);
+}
+
+.main-content .profile-btn-back.btn-outline-secondary {
+    border-color: rgba(255,255,255,0.06);
+    color: var(--text-primary);
+    background: transparent;
+}
+
+/* Info items */
+.main-content .info-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.03);
+    color: var(--text-primary);
+}
+
+.main-content .profile-info-label {
+    color: var(--secondary-green);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.main-content .profile-info-value {
+    color: #e9ecef;
+}
+
+/* Botão de alterar senha */
+.main-content .profile-btn-reset.btn-outline-warning {
+    border-color: var(--secondary-green);
+    color: var(--secondary-green);
+}
+
+.main-content .profile-btn-reset.btn-outline-warning:hover {
+    background: var(--secondary-green);
+    color: var(--primary-bluegray);
+}
+
+/* Força contraste se Bootstrap ainda estiver vencendo (uso mínimo de !important) */
+.main-content .profile-card,
+.main-content .profile-card .profile-card-header,
+.main-content .profile-card .profile-card-body {
+    /* evitar que utilitários Bootstrap anulem */
+    background-clip: padding-box;
 }

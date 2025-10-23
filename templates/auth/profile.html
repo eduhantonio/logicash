@@ -1,325 +1,147 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 
-{% block title %}Perfil - LogiCash{% endblock %}
+{% block title %}LogiCash | Perfil{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-coins"></i>
-                    <span>LogiCash</span>
+<div class="main-content-profile fade-in-up">
+
+    <!-- Cabeçalho do Perfil -->
+    <div class="content-header">
+        <div class="profile-header d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div class="profile-avatar me-3">
+                    <i class="fas fa-user-circle fa-4x text-light"></i>
+                </div>
+                <div>
+                    <h2 class="welcome-title mb-1">{{ estudante.nome|default:user.username }}</h2>
+                    <p class="text-secondary mb-0">{{ user.email }}</p>
+                    <small class="text-secondary">Membro desde {{ user.date_joined|date:"F Y" }}</small>
                 </div>
             </div>
-            
-            <div class="sidebar-nav">
-                <div class="nav-item">
-                    <a href="{% url 'dashboard' %}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        Dashboard
-                    </a>
+            <div class="profile-stats d-flex gap-4">
+                <div class="text-center">
+                    <h3 class="mb-0">{{ pontuacao.pontos_totais|default:0 }}</h3>
+                    <small>Pontos</small>
                 </div>
-                
-                <div class="nav-item">
-                    <a href="{% url 'profile' %}" class="nav-link active">
-                        <i class="fas fa-user"></i>
-                        Perfil
-                    </a>
-                </div>
-                
-                <div class="nav-item">
-                    <a href="{% url 'logout' %}" class="nav-link">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Sair
-                    </a>
+                <div class="text-center">
+                    <h3 class="mb-0">{{ pontuacao.nivel_atual|default:1 }}</h3>
+                    <small>Nível</small>
                 </div>
             </div>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="profile-container">
-                <!-- Header -->
-                <div class="profile-header">
-                    <div class="profile-avatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <div class="profile-info">
-                        <h1>{{ estudante.nome|default:user.username }}</h1>
-                        <p class="profile-email">{{ user.email }}</p>
-                        <p class="profile-join-date">
-                            Membro desde {{ user.date_joined|date:"F Y" }}
-                        </p>
-                    </div>
-                    <div class="profile-stats">
-                        <div class="stat-item">
-                            <span class="stat-value">{{ pontuacao.pontos_totais|default:0 }}</span>
-                            <span class="stat-label">Pontos</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-value">{{ pontuacao.nivel_atual|default:1 }}</span>
-                            <span class="stat-label">Nível</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Profile Form -->
-                <div class="profile-form-container">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-edit"></i> Editar Perfil</h3>
-                        </div>
-                        <div class="card-body">
-                            <form method="post" class="profile-form">
-                                {% csrf_token %}
-                                
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="{{ form.nome.id_for_label }}" class="form-label">
-                                                <i class="fas fa-user"></i> Nome Completo
-                                            </label>
-                                            {{ form.nome }}
-                                            {% if form.nome.errors %}
-                                                <div class="form-errors">
-                                                    {% for error in form.nome.errors %}
-                                                        <small class="text-danger">{{ error }}</small>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="{{ form.data_nascimento.id_for_label }}" class="form-label">
-                                                <i class="fas fa-birthday-cake"></i> Data de Nascimento
-                                            </label>
-                                            {{ form.data_nascimento }}
-                                            {% if form.data_nascimento.errors %}
-                                                <div class="form-errors">
-                                                    {% for error in form.data_nascimento.errors %}
-                                                        <small class="text-danger">{{ error }}</small>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="form-group">
-                                            <label for="{{ form.escola.id_for_label }}" class="form-label">
-                                                <i class="fas fa-school"></i> Escola
-                                            </label>
-                                            {{ form.escola }}
-                                            {% if form.escola.errors %}
-                                                <div class="form-errors">
-                                                    {% for error in form.escola.errors %}
-                                                        <small class="text-danger">{{ error }}</small>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="{{ form.serie.id_for_label }}" class="form-label">
-                                                <i class="fas fa-calendar-alt"></i> Série
-                                            </label>
-                                            {{ form.serie }}
-                                            {% if form.serie.errors %}
-                                                <div class="form-errors">
-                                                    {% for error in form.serie.errors %}
-                                                        <small class="text-danger">{{ error }}</small>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save"></i>
-                                        Salvar Alterações
-                                    </button>
-                                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
-                                        <i class="fas fa-arrow-left"></i>
-                                        Voltar ao Dashboard
-                                    </a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Account Info -->
-                <div class="account-info-container">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-cog"></i> Informações da Conta</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="account-info-grid">
-                                <div class="info-item">
-                                    <label>Nome de Usuário:</label>
-                                    <span>{{ user.username }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <label>Email:</label>
-                                    <span>{{ user.email }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <label>Último Login:</label>
-                                    <span>{{ user.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <label>Data de Cadastro:</label>
-                                    <span>{{ user.date_joined|date:"d/m/Y" }}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="account-actions">
-                                <a href="{% url 'password_reset' %}" class="btn btn-outline-warning">
-                                    <i class="fas fa-key"></i>
-                                    Alterar Senha
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
+
+    <!-- Wrapper específico do perfil (corresponde ao CSS custom) -->
+    <div class="profile-container">
+
+        <!-- Formulário de Edição -->
+        <div class="card profile-card">
+            <div class="card-header profile-card-header d-flex align-items-center">
+                <i class="fas fa-edit me-2"></i>
+                <h5 class="mb-0">Editar Perfil</h5>
+            </div>
+            <div class="card-body profile-card-body">
+                <form method="post" class="profile-form">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nome.id_for_label }}" class="form-label profile-form-label">
+                                <i class="fas fa-user me-1"></i> Nome Completo
+                            </label>
+                            {{ form.nome }}
+                            {% for error in form.nome.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.data_nascimento.id_for_label }}" class="form-label profile-form-label">
+                                <i class="fas fa-birthday-cake me-1"></i> Data de Nascimento
+                            </label>
+                            {{ form.data_nascimento }}
+                            {% for error in form.data_nascimento.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="{{ form.escola.id_for_label }}" class="form-label profile-form-label">
+                                <i class="fas fa-school me-1"></i> Escola
+                            </label>
+                            {{ form.escola }}
+                            {% for error in form.escola.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.serie.id_for_label }}" class="form-label profile-form-label">
+                                <i class="fas fa-calendar-alt me-1"></i> Série
+                            </label>
+                            {{ form.serie }}
+                            {% for error in form.serie.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <button type="submit" class="btn btn-success profile-btn-save">
+                            <i class="fas fa-save me-1"></i> Salvar Alterações
+                        </button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary profile-btn-back">
+                            <i class="fas fa-arrow-left me-1"></i> Voltar ao Dashboard
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Informações da Conta -->
+        <div class="card profile-card">
+            <div class="card-header profile-card-header d-flex align-items-center">
+                <i class="fas fa-cog me-2"></i>
+                <h5 class="mb-0">Informações da Conta</h5>
+            </div>
+            <div class="card-body profile-card-body">
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded">
+                            <label class="profile-info-label fw-bold">Nome de Usuário:</label>
+                            <div class="profile-info-value">{{ user.username }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded">
+                            <label class="profile-info-label fw-bold">Email:</label>
+                            <div class="profile-info-value">{{ user.email }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded">
+                            <label class="profile-info-label fw-bold">Último Login:</label>
+                            <div class="profile-info-value">{{ user.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded">
+                            <label class="profile-info-label fw-bold">Data de Cadastro:</label>
+                            <div class="profile-info-value">{{ user.date_joined|date:"d/m/Y" }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 border-top pt-3">
+                    <a href="{% url 'password_reset' %}" class="btn btn-outline-warning profile-btn-reset">
+                        <i class="fas fa-key me-1"></i> Alterar Senha
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- .profile-container -->
+
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-.profile-container {
-    padding: 2rem 0;
-}
-
-.profile-header {
-    display: flex;
-    align-items: center;
-    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-    color: white;
-    padding: 2rem;
-    border-radius: var(--border-radius);
-    margin-bottom: 2rem;
-    box-shadow: var(--box-shadow);
-}
-
-.profile-avatar {
-    font-size: 4rem;
-    margin-right: 2rem;
-}
-
-.profile-info h1 {
-    margin: 0 0 0.5rem 0;
-    font-size: 2rem;
-}
-
-.profile-email {
-    margin: 0 0 0.5rem 0;
-    opacity: 0.9;
-}
-
-.profile-join-date {
-    margin: 0;
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-.profile-stats {
-    margin-left: auto;
-    display: flex;
-    gap: 2rem;
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-value {
-    display: block;
-    font-size: 2rem;
-    font-weight: bold;
-}
-
-.stat-label {
-    font-size: 0.9rem;
-    opacity: 0.9;
-}
-
-.profile-form-container,
-.account-info-container {
-    margin-bottom: 2rem;
-}
-
-.profile-form .form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-actions {
-    margin-top: 2rem;
-    display: flex;
-    gap: 1rem;
-}
-
-.account-info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    background: var(--light-green);
-    border-radius: var(--border-radius);
-}
-
-.info-item label {
-    font-weight: 600;
-    color: var(--primary-green);
-    margin-bottom: 0.5rem;
-}
-
-.info-item span {
-    color: var(--dark-gray);
-}
-
-.account-actions {
-    padding-top: 1rem;
-    border-top: 1px solid #dee2e6;
-}
-
-@media (max-width: 768px) {
-    .profile-header {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .profile-avatar {
-        margin-right: 0;
-        margin-bottom: 1rem;
-    }
-    
-    .profile-stats {
-        margin-left: 0;
-        margin-top: 1rem;
-    }
-    
-    .form-actions {
-        flex-direction: column;
-    }
-}
-</style>
 {% endblock %}

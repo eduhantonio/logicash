@@ -39,6 +39,7 @@ class Quiz(models.Model):
     pontos_base = models.IntegerField(default=10, help_text="Pontos base para completar o quiz")
     ativo = models.BooleanField(default=True)
     data_criacao = models.DateTimeField(auto_now_add=True)
+    publico_alvo = models.CharField(max_length=100, blank=True, help_text="Ex: Ensino Fundamental, Médio, Adultos")
     
     class Meta:
         verbose_name = "Quiz"
@@ -99,6 +100,7 @@ class Resultado(models.Model):
     data_realizacao = models.DateTimeField(auto_now_add=True)
     tempo_gasto = models.IntegerField(null=True, blank=True, help_text="Tempo gasto em segundos")
     concluido = models.BooleanField(default=False)
+    desafio = models.ForeignKey("Desafio", on_delete=models.SET_NULL, null=True, blank=True, related_name="resultados")
     
     class Meta:
         verbose_name = "Resultado"
@@ -179,3 +181,61 @@ class EstudanteConquista(models.Model):
     
     def __str__(self):
         return f"{self.estudante.nome} - {self.conquista.nome}"
+
+class Modulo(models.Model):
+    nome = models.CharField(max_length=150)
+    descricao = models.TextField()
+    icone = models.CharField(max_length=50, default="wallet", help_text="Ícone representativo do módulo")
+    cor = models.CharField(max_length=7, default="#008445")
+    ativo = models.BooleanField(default=True)
+    ordem = models.IntegerField(default=1)
+    slug = models.SlugField(unique=True, help_text="Identificador usado na URL (ex: 'gestao', 'planejamento')")
+
+    class Meta:
+        verbose_name = "Módulo de Aprendizagem"
+        verbose_name_plural = "Módulos de Aprendizagem"
+        ordering = ["ordem"]
+
+    def __str__(self):
+        return self.nome
+
+class Desafio(models.Model):
+    TIPO_DESAFIO = [
+        ("quiz", "Quiz Interativo"),
+        ("simulacao", "Simulação"),
+        ("dilema", "Dilema Interativo"),
+    ]
+
+    modulo = models.ForeignKey(Modulo, on_delete=models.CASCADE, related_name="desafios")
+    titulo = models.CharField(max_length=200)
+    descricao = models.TextField()
+    tipo = models.CharField(max_length=50, choices=TIPO_DESAFIO, default="quiz")
+    ordem = models.IntegerField(default=1)
+    quiz = models.ForeignKey("Quiz", on_delete=models.SET_NULL, null=True, blank=True, related_name="desafio")
+    pontos_base = models.IntegerField(default=100)
+    ativo = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Desafio"
+        verbose_name_plural = "Desafios"
+        ordering = ["modulo", "ordem"]
+        unique_together = ["modulo", "ordem"]
+
+    def __str__(self):
+        return f"{self.modulo.nome} - {self.titulo}"
+
+class ProgressoDesafio(models.Model):
+    estudante = models.ForeignKey(Estudante, on_delete=models.CASCADE, related_name="progresso_desafios")
+    desafio = models.ForeignKey(Desafio, on_delete=models.CASCADE, related_name="progresso")
+    concluido = models.BooleanField(default=False)
+    pontuacao = models.IntegerField(default=0)
+    data_inicio = models.DateTimeField(auto_now_add=True)
+    data_conclusao = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Progresso de Desafio"
+        verbose_name_plural = "Progresso de Desafios"
+        unique_together = ["estudante", "desafio"]
+
+    def __str__(self):
+        return f"{self.estudante.nome} - {self.desafio.titulo} ({'Concluído' if self.concluido else 'Em andamento'})"

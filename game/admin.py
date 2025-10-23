@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from .models import (
     Estudante, Pontuacao, Conquista, EstudanteConquista, 
-    Quiz, Pergunta, Resposta, Resultado
+    Quiz, Pergunta, Resposta, Resultado, Modulo, Desafio, ProgressoDesafio
 )
 
 
@@ -210,3 +210,6 @@ admin.site.register(User, CustomUserAdmin)
 admin.site.site_header = "LogiCash - Administração"
 admin.site.site_title = "LogiCash Admin"
 admin.site.index_title = "Painel de Administração do LogiCash"
+admin.site.register(Modulo)
+admin.site.register(Desafio)
+admin.site.register(ProgressoDesafio)
